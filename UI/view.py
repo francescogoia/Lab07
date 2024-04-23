@@ -35,7 +35,8 @@ class View(ft.UserControl):
                                             ft.dropdown.Option(key="9", text="settembre"),
                                             ft.dropdown.Option(key="10", text="ottobre"),
                                             ft.dropdown.Option(key="11", text="novembre"),
-                                            ft.dropdown.Option(key="12", text="dicembre"),],
+                                            ft.dropdown.Option(key="12", text="dicembre"),
+                                            ft.dropdown.Option(key=None, text="Totale misurazioni")],
                                    label="mese",
                                    width=200,
                                    hint_text="Selezionare un mese",
@@ -73,6 +74,8 @@ class View(ft.UserControl):
         self._page.dialog = dlg
         dlg.open = True
         self._page.update()
+
+
 
     def update_page(self):
         self._page.update()

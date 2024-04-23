@@ -2,7 +2,7 @@ from database.DB_connect import DBConnect
 from model.situazione import Situazione
 
 
-class MeteoDao():
+class MeteoDao:
 
     @staticmethod
     def get_all_situazioni():
@@ -25,3 +25,7 @@ class MeteoDao():
         return result
 
 
+if __name__ == "__main__":
+    mtDeo = MeteoDao()
+    for i in mtDeo.get_all_situazioni():
+        print(i)

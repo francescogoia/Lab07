@@ -8,6 +8,9 @@ class Situazione:
     data: datetime.date
     umidita: int
 
+    def get_mese(self):
+        return self.data.month
+
     def __eq__(self, other):
         return self.localita == other.localita and self.data == other.data
 
@@ -16,3 +19,4 @@ class Situazione:
 
     def __str__(self):
         return f"[{self.localita} - {self.data}] Umidità = {self.umidita}"
+
