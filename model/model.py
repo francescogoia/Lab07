@@ -61,11 +61,7 @@ class Model:
     def ricorsione(self, mese, giorno, parziale):
         self.N_ricorsioni += 1
         if len(parziale) == 15 :
-            parziale = self.aggiungi_costi(parziale)
-            costo_tot = 0
-            for i in parziale:
-                costo_tot += i[2]
-            risultato = (costo_tot, parziale)
+            risultato = self.aggiungi_costi(parziale)
             print(risultato)
             self._soluzioni.append(copy.deepcopy(risultato))
             self.N_soluzioni += 1
@@ -80,7 +76,7 @@ class Model:
 
 
     def aggiungi_costi(self, parziale):               # parziale è una lista di tuple (localita, data, umidita)
-        risultato = []
+        costo_tot = 0
         for i in range(len(parziale)):
             costo_var = parziale[i][2]
             costo_maggiorato = 0
@@ -89,16 +85,11 @@ class Model:
             else:
                 if parziale[i][0] != parziale[i - 1][0]:
                     costo_maggiorato = 100
-
             costi = costo_var + costo_maggiorato
-            risultato.append((parziale[i][0], parziale[i][1], costi))
-        return risultato
+            costo_tot += costi
 
-    def soluzione_migliore(self):
-        soluzioni = self._soluzioni
-        minimo = min(soluzioni, key=lambda x : x[0])
-        print(minimo)
-        return minimo
+        return costo_tot, parziale
+
 
     def citta_ammissibile(self, parziale):
         diz_citta = {}
@@ -117,10 +108,17 @@ class Model:
             giorni_consecutivi = True
         elif len(parziale) > 3:
             i = len(parziale) - 1
-            if parziale[i - 1][0] == parziale[i - 2][0] and parziale[i - 2][0] == parziale[i - 3][0]:
+            if parziale[i - 1][0] == parziale[i - 2][0] and parziale[i - 2][0] == parziale[i - 3][0]:       # i 3 precedenti sono uguali (può cambiare città)
                 giorni_consecutivi = True
-            elif parziale[i][0] == parziale[i - 1][0] and parziale[i - 1][0] == parziale[i - 2][0]:
+            elif parziale[i][0] == parziale[i - 1][0] and parziale[i - 1][0] == parziale[i - 2][0]:         # uguale ai due precedenti
                 giorni_consecutivi = True
-            elif parziale[i][0] == parziale[i - 1][0]:
+            elif parziale[i][0] == parziale[i - 1][0]:                                                      # uguale al precedente
                 giorni_consecutivi = True
         return giorni_consecutivi
+
+
+    def soluzione_migliore(self):
+        soluzioni = self._soluzioni
+        minimo = min(soluzioni, key=lambda x : x[0])
+        print(minimo)
+        return minimo

@@ -31,9 +31,10 @@ class Controller:
         print(f"N ricorsioni {self._model.N_ricorsioni}, N soluzioni {self._model.N_soluzioni}")
         print(f"Tempo {end - start}")
         risultato = self._model.soluzione_migliore()
-        for i in risultato:
-            self._view.lst_result.controls.append(ft.Text(f"{i} \n"))
-            self._view.update_page()
+        self._view.lst_result.controls.append(ft.Text(f"La sequenza ottima ha costo {risultato[0]} ed è:"))
+        for j in risultato[1]:
+            self._view.lst_result.controls.append(ft.Text(f"[{j[0]} - {j[1]}] Umidità: {j[2]}"))
+        self._view.update_page()
 
     def read_mese(self, e):         ## chiamata on-change
         self._mese = int(e.control.value)
