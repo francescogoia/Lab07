@@ -60,7 +60,7 @@ class Model:
 
     def ricorsione(self, mese, giorno, parziale):
         self.N_ricorsioni += 1
-        if len(parziale) == 10 :
+        if len(parziale) == 15 :
             parziale = self.aggiungi_costi(parziale)
             costo_tot = 0
             for i in parziale:
@@ -86,9 +86,8 @@ class Model:
             costo_maggiorato = 0
             if i <= 1:
                 costo_maggiorato = 100
-
             else:
-                if parziale[i][0] != parziale[i - 1][0] or parziale[i][0] != parziale[i - 2][0]:
+                if parziale[i][0] != parziale[i - 1][0]:
                     costo_maggiorato = 100
 
             costi = costo_var + costo_maggiorato
@@ -102,27 +101,26 @@ class Model:
         return minimo
 
     def citta_ammissibile(self, parziale):
+        diz_citta = {}
+        for i in range(len(parziale)):
+            diz_citta[parziale[i][0]] = 0
+        for i in range(len(parziale)):
+            diz_citta[parziale[i][0]] += 1
+            if diz_citta[parziale[i][0]] > 6:
+                return False
+        giorni_consecutivi = False
         if len(parziale) == 1:
-            return True
+            giorni_consecutivi = True
         elif len(parziale) == 2 and parziale[0][0] == parziale[1][0]:
-            return True
+            giorni_consecutivi = True
         elif len(parziale) == 3 and parziale[0][0] == parziale[1][0] and parziale[1][0] == parziale[2][0]:
-            return True
+            giorni_consecutivi = True
         elif len(parziale) > 3:
-
             i = len(parziale) - 1
-            contatore = 0
             if parziale[i - 1][0] == parziale[i - 2][0] and parziale[i - 2][0] == parziale[i - 3][0]:
-                contatore = 3
-            if contatore == 3:
-                return True
-
-        return False
-        """
-        if len(parziale) == 2 and parziale[0][0] != parziale[1][0]:
-            return False
-        elif len(parziale) == 3 and parziale[0][0] != parziale[1][0] or parziale[1][0] != parziale[2][0]:
-            return False
-        
-        return True
-        """
+                giorni_consecutivi = True
+            elif parziale[i][0] == parziale[i - 1][0] and parziale[i - 1][0] == parziale[i - 2][0]:
+                giorni_consecutivi = True
+            elif parziale[i][0] == parziale[i - 1][0]:
+                giorni_consecutivi = True
+        return giorni_consecutivi

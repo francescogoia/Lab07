@@ -30,8 +30,10 @@ class Controller:
         end = time.time()
         print(f"N ricorsioni {self._model.N_ricorsioni}, N soluzioni {self._model.N_soluzioni}")
         print(f"Tempo {end - start}")
-        self._model.soluzione_migliore()
-        pass
+        risultato = self._model.soluzione_migliore()
+        for i in risultato:
+            self._view.lst_result.controls.append(ft.Text(f"{i} \n"))
+            self._view.update_page()
 
     def read_mese(self, e):         ## chiamata on-change
         self._mese = int(e.control.value)
