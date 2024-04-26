@@ -1,3 +1,4 @@
+import copy
 import datetime
 
 from database.meteo_dao import MeteoDao
@@ -7,15 +8,20 @@ class Model:
     def __init__(self):
         situazioni = MeteoDao.get_all_situazioni()
         self._diz_situazioni = {}
-        self.popola_diz_situazioni()
-
-    def popola_diz_situazioni(self):
+        self._set_situazioni = set()
+        self.popola_situazioni()
+        self.N_ricorsioni = 0
+        self._soluzioni = []
+        self.N_soluzioni = 0
+    def popola_situazioni(self):
         situazioni = MeteoDao.get_all_situazioni()
         for s in situazioni:
             if self._diz_situazioni.get(s.localita) is None:
                 self._diz_situazioni[s.localita] = []
             self._diz_situazioni[s.localita].append(s)
-       # print(self._diz_situazioni)
+            self._set_situazioni.add(s)
+        #print(self._diz_situazioni)
+        #print(self._set_situazioni)
 
     def umidita_media(self, mese):
         risultato = []
@@ -44,12 +50,79 @@ class Model:
                 for s in self._diz_situazioni[c]:
                     if s.data.month == mese:
                         costi[c] += s.umidita
-            print(costi)
-            print(min(costi.items(), key=lambda x : x[1]))
+          #  print(costi)
+          #  print(min(costi.items(), key=lambda x : x[1]))
             return min(costi.items(), key=lambda x : x[1])
         else:
             for c in self._diz_situazioni.keys():
                 return self.sequenza_ricorsione(giorno - 1, mese)
 
 
+    def ricorsione(self, mese, giorno, parziale):
+        self.N_ricorsioni += 1
+        if len(parziale) == 10 :
+            parziale = self.aggiungi_costi(parziale)
+            costo_tot = 0
+            for i in parziale:
+                costo_tot += i[2]
+            risultato = (costo_tot, parziale)
+            print(risultato)
+            self._soluzioni.append(copy.deepcopy(risultato))
+            self.N_soluzioni += 1
 
+        else:
+            for situa in self._set_situazioni:
+                if situa.get_mese() == mese and situa.data.day == giorno:
+                    parziale.append((situa.localita, situa.data, situa.umidita))
+                    if self.citta_ammissibile(parziale) == True:
+                        self.ricorsione(mese, giorno +1, parziale)
+                    parziale.pop()
+
+
+    def aggiungi_costi(self, parziale):               # parziale è una lista di tuple (localita, data, umidita)
+        risultato = []
+        for i in range(len(parziale)):
+            costo_var = parziale[i][2]
+            costo_maggiorato = 0
+            if i <= 1:
+                costo_maggiorato = 100
+
+            else:
+                if parziale[i][0] != parziale[i - 1][0] or parziale[i][0] != parziale[i - 2][0]:
+                    costo_maggiorato = 100
+
+            costi = costo_var + costo_maggiorato
+            risultato.append((parziale[i][0], parziale[i][1], costi))
+        return risultato
+
+    def soluzione_migliore(self):
+        soluzioni = self._soluzioni
+        minimo = min(soluzioni, key=lambda x : x[0])
+        print(minimo)
+        return minimo
+
+    def citta_ammissibile(self, parziale):
+        if len(parziale) == 1:
+            return True
+        elif len(parziale) == 2 and parziale[0][0] == parziale[1][0]:
+            return True
+        elif len(parziale) == 3 and parziale[0][0] == parziale[1][0] and parziale[1][0] == parziale[2][0]:
+            return True
+        elif len(parziale) > 3:
+
+            i = len(parziale) - 1
+            contatore = 0
+            if parziale[i - 1][0] == parziale[i - 2][0] and parziale[i - 2][0] == parziale[i - 3][0]:
+                contatore = 3
+            if contatore == 3:
+                return True
+
+        return False
+        """
+        if len(parziale) == 2 and parziale[0][0] != parziale[1][0]:
+            return False
+        elif len(parziale) == 3 and parziale[0][0] != parziale[1][0] or parziale[1][0] != parziale[2][0]:
+            return False
+        
+        return True
+        """

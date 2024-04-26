@@ -1,3 +1,5 @@
+import time
+
 import flet as ft
 
 from UI.view import View
@@ -22,7 +24,13 @@ class Controller:
 
 
     def handle_sequenza(self, e):
-        risultato = self._model.sequenza_ricorsione(3, self._mese)
+        risultato = self._model.sequenza_ricorsione(15, self._mese)
+        start = time.time()
+        self._model.ricorsione(self._mese, 1, [])
+        end = time.time()
+        print(f"N ricorsioni {self._model.N_ricorsioni}, N soluzioni {self._model.N_soluzioni}")
+        print(f"Tempo {end - start}")
+        self._model.soluzione_migliore()
         pass
 
     def read_mese(self, e):         ## chiamata on-change
