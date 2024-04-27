@@ -62,7 +62,7 @@ class Model:
         self.N_ricorsioni += 1
         if len(parziale) == 15 :
             risultato = self.aggiungi_costi(parziale)
-            print(risultato)
+            #print(risultato)
             self._soluzioni.append(copy.deepcopy(risultato))
             self.N_soluzioni += 1
 
@@ -81,9 +81,9 @@ class Model:
             costo_var = parziale[i][2]
             costo_maggiorato = 0
             if i <= 1:
-                costo_maggiorato = 100
+                costo_maggiorato = 0
             else:
-                if parziale[i][0] != parziale[i - 1][0]:
+                if parziale[i][0] != parziale[i - 1][0] or parziale[i - 1][0] != parziale[i - 2][0]:
                     costo_maggiorato = 100
             costi = costo_var + costo_maggiorato
             costo_tot += costi
