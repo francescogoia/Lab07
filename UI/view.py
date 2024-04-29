@@ -36,7 +36,7 @@ class View(ft.UserControl):
                                             ft.dropdown.Option(key="10", text="ottobre"),
                                             ft.dropdown.Option(key="11", text="novembre"),
                                             ft.dropdown.Option(key="12", text="dicembre"),
-                                            ft.dropdown.Option(key=None, text="Totale misurazioni")],
+                                            ft.dropdown.Option(key="0", text="Totale misurazioni")],
                                    label="mese",
                                    width=200,
                                    hint_text="Selezionare un mese",

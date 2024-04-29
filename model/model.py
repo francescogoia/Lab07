@@ -32,7 +32,7 @@ class Model:
                 if mese is not None and s.get_mese() == mese:
                     umidita_tot += s.umidita
                     num_misurazioni += 1
-                else:
+                if mese == 0 or mese is None:
                     umidita_tot += s.umidita
                     num_misurazioni += 1
             umidita_media_citta = umidita_tot / num_misurazioni
@@ -92,13 +92,20 @@ class Model:
 
 
     def citta_ammissibile(self, parziale):
-        diz_citta = {}
+        """    diz_citta = {}
         for i in range(len(parziale)):
             diz_citta[parziale[i][0]] = 0
         for i in range(len(parziale)):
             diz_citta[parziale[i][0]] += 1
             if diz_citta[parziale[i][0]] > 6:
-                return False
+                return False    """
+        contatore = 0
+        i = len(parziale) - 1
+        for p in parziale:
+            if p[0] == parziale[i][0]:
+                contatore += 1
+        if contatore > 6:
+            return False
         giorni_consecutivi = False
         if len(parziale) == 1:
             giorni_consecutivi = True
@@ -107,7 +114,7 @@ class Model:
         elif len(parziale) == 3 and parziale[0][0] == parziale[1][0] and parziale[1][0] == parziale[2][0]:
             giorni_consecutivi = True
         elif len(parziale) > 3:
-            i = len(parziale) - 1
+            i = len(parziale) - 1                   # indice dell'ultima aggiunta
             if parziale[i - 1][0] == parziale[i - 2][0] and parziale[i - 2][0] == parziale[i - 3][0]:       # i 3 precedenti sono uguali (può cambiare città)
                 giorni_consecutivi = True
             elif parziale[i][0] == parziale[i - 1][0] and parziale[i - 1][0] == parziale[i - 2][0]:         # uguale ai due precedenti
@@ -121,4 +128,5 @@ class Model:
         soluzioni = self._soluzioni
         minimo = min(soluzioni, key=lambda x : x[0])
         print(minimo)
+        self._soluzioni = []
         return minimo
